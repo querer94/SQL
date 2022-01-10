@@ -1,0 +1,103 @@
+sysdate 오늘 날짜 확인 함수
+
+(최신날짜, 예전날짜)
+
+select ename, MONTHS_BETWEEN(sysdate, hiredate)
+from emp;
+
+SELECT TO_DATE('2019-06-01','RRRR,MM,DD') - TO_DATE('2018-10-01','RRRR,MM,DD')
+FROM DUAL
+
+개월 후 날짜
+
+SELECT ADD_MONTHS(TO_DATE('2019-05-01','RRRR-MM-DD'),10)
+FROM dual
+
+특정 날짜 뒤에오는 요일의 날짜
+
+10달 뒤의 수요일
+
+SELECT SYSDATE AS 날짜,NEXT_DAY(ADD_MONTHS(SYSDATE,5),'수요일')
+FROM DUAL;
+
+이번달이 몇일 남았을까
+
+SELECT LAST_DAY(sysdate) - sysdate as 남은일
+FROM DUAL;
+
+이름이 scott인 사원의 이름과 입사한 요일을 출력하고 월급 출력
+
+SELECT ename AS 이름 , TO_CHAR(hiredate,'day') AS 입사요일 ,sal AS 월급 
+FROM emp
+where ename = 'SCOTT';
+
+TO_CHAR
+숫자형 -> 문자형
+날짜형 -> 문자형
+
+특히 날짜형은 문자로 변환하여 년 월 일 요일 등을 추출한다.
+
+SELECT HIREDATE,TO_CHAR(hiredate,'rrrr') as 연도,
+                TO_CHAR(hiredate,'mm') as 월,
+                TO_CHAR(hiredate,'dd') as 일,
+                TO_CHAR(hiredate,'day') as 요일
+FROM emp
+where ename = 'SCOTT';
+
+1981년도에 입사한 사원들의 이름과 입사일만 출력하세요
+
+SELECT ename as 이름,HIREDATE as 입사일
+FROM emp
+where to_char(hiredate,'rrrr')='1981'
+
+SELECT ename,
+    extract(year from hiredate) as 연도,
+    extract(month from hiredate) as 달,
+    extract(day from hiredate) as 날
+FROM emp;
+
+SELECT ename,to_char(sal,'999,999') as 급여
+FROM emp;
+
+SELECT ename,to_char(sal,'L999,999') as 급여
+FROM emp;
+
+TO_DATE 함수
+
+81년 11월 17일에 입사한 사원의 이름과 입사일을 출력
+
+SELECT ename AS 이름, HIREDATE AS 입사일
+FROM emp
+WHERE hiredate = to_date('81/11/17','rr/mm/dd');
+
+
+#형변환
+
+문자형으로 숫자를 검색했지만 결과가 에러없이 잘 출력되었다.
+오라클이 알아서 암묵적으로 형변환을 하기 때문에 에러가 발생하지 않고 출력 된 것이다.
+문자형을 숫자형으로 자동 변경하였다.
+
+SELECT ename, sal
+    FROM emp
+    WHERE sal = '3000';
+
+SELECT ename, sal
+    FROM emp
+    WHERE TO_NUMBER(sal) = 3000;
+
+오라클이 숫자로 자동 변환하여 잘 검색하고 있다.
+
+NVL NVL2
+
+SELECT ename, comM, NVL(COMM,0)
+    FROM emp
+
+SELECT ename, sal, nvl(comm,0),sal+nvl(comm,0)
+    FROM emp
+
+NVL2 = NULL아니면 계산하고 NULL
+
+SELECT ename, sal, comm, nvl2(comm, sal+comm,sal)
+    FROM emp;
+
+IF문을 SQL에서 구현하는 DECODE
